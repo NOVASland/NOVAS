@@ -1,55 +1,9 @@
 import { compile } from "https://cdn.jsdelivr.net/npm/svelte@3.42.3/compiler.mjs";
-import { ensureFile } from "https://deno.land/std@0.113.0/fs/mod.ts"; // Requires --unstable flag
 import { join } from "https://deno.land/std@0.113.0/path/mod.ts";
-import boilerplate from "../templates/build.ts";
+import { ensureFile } from "https://deno.land/std@0.113.0/fs/mod.ts"; // Requires --unstable flag
 
-type compiledFiles = { [fileName: string]: string };
-
-/**
- * Function to get all project files in the directory.
- * @param {string[]} file An array of svelte files.
- */
-export const getProjectDir = async (currentPath: string): Promise<string[]> => {
-  const projectNestedDir: string[] = [];
-
-  for await (const dirEntry of Deno.readDir(currentPath)) {
-    // Ignores build/dist folders. Change later to ignore build folder input by user in config.json
-    if (
-      dirEntry.name === "build" || dirEntry.name === "dist" ||
-      dirEntry.name === "server"
-    ) {
-      continue;
-    }
-
-    const entryPath = `${currentPath}/${dirEntry.name}`;
-    projectNestedDir.push(entryPath);
-
-    if (dirEntry.isDirectory) {
-      projectNestedDir.push(...await getProjectDir(entryPath));
-    }
-  }
-  return projectNestedDir;
-};
-
-/**
- * Function to get all the .svelte files in the project.
- * @param {string[]} file An array of svelte files.
- */
-export const getSvelteFiles = (files: string[]): string[] => {
-  const svelteFiles: string[] = files?.filter((file: string) =>
-    file.endsWith(".svelte")
-  );
-  return svelteFiles;
-};
-
-/**
- * Changes each .svelte import inside a compiled svelte app into .svelte.js.
- * @param svelteFiles An array of svelte files.
- * @returns An object of compiled files.
- */
-export const compileSvelteFiles = async (svelteFiles: string[]): Promise<compiledFiles> => {
-  let options;
-  
+const getOptions = async() => {
+  let options: { [key: string]: string|boolean};
   try{
     const decoderlol = new TextDecoder('utf-8');
     const data = await Deno.readFile(join(Deno.cwd(), "compileOptions.json"));
@@ -62,77 +16,55 @@ export const compileSvelteFiles = async (svelteFiles: string[]): Promise<compile
       generate: "dom",
       sveltePath: "https://cdn.skypack.dev/svelte@3.44.1",
       hydratable: true,
-      css: true,
-      preserveComments: false,
-      preserveWhitespace: false,
     };
   }
+  return options;
+}
 
-  const finalSvelteFiles: compiledFiles = {};
-
-  for (const file of svelteFiles) {
-    // const { js, ast, css } = compile(await Deno.readTextFile(file), options);
-    const { js } = compile(await Deno.readTextFile(file), options);
-    //https://cdn.skypack.dev/svelte@3.42.3/internal
-    const compiledJavascript: string = js?.code ?? "";
-
-    const denoImports: string = compiledJavascript.replace(
-      /import\s(.+?)\sfrom\s*['"](.+?)(.svelte)['"]/igm,
-      `import $1 from '$2$3.js'`,
+const denofy = (file:string, sveltePath: string | boolean) => {
+  return file.replace(
+    /import\s(.+?)\sfrom\s*['"](.+?)(.svelte)['"]/igm,
+    `import $1 from '$2$3.js'`,
     )
-      .replace(
-        /import\s(.+?)\sfrom\s*['"](svelte\/(.+?))['"]/igm,
-        `import $1 from '${options.sveltePath}` + `/$3'`,
-      )
-      .replace(
-        /import\s(.+?)\sfrom\s*['"](svelte)['"]/igm,
-        `import $1 from '${options.sveltePath}/internal'`,
-      );
+    .replace(
+      /import\s(.+?)\sfrom\s*['"](svelte\/(.+?))['"]/igm,
+      `import $1 from '${sveltePath}` + `/$3'`,
+    )
+    .replace(
+      /import\s(.+?)\sfrom\s*['"](svelte)['"]/igm,
+      `import $1 from '${sveltePath}/internal'`,
+    ) 
+}
 
-    finalSvelteFiles[file.replace(`${Deno.cwd()}`, "")] = denoImports;
-    // console.log(`${'='.repeat(50)} ${file.replace(`${Deno.cwd()}`, "")} ${'='.repeat(50)}`);
-    // ast.instance.content.body == An arry of objects. The type has "ImportDeclaration", which probably has imports on it?? On that object, source.value is the import location
-    // console.log(ast.instance?.content?.body?.filter((script: { type: string; }) => script.type === "ImportDeclaration"));
-    // console.log(js?.code)
-    // console.log(`${'='.repeat(50)} ${file.replace(`${Deno.cwd()}`, "")} ${'='.repeat(50)}`);
-  }
-  return finalSvelteFiles;
-};
-
-/**
- * Creates project file architecture for build directory
- * @param object An object with keys as file name and value is the compiled file
- */
-export const createBuildDir = async (compiledFiles: compiledFiles): Promise<void> => {
+export const compiler = async (file: string) => {
+  const options = await getOptions()
   const encoder = new TextEncoder();
-  for (const file in compiledFiles) {
-    const data = encoder.encode(compiledFiles[file]);
-    await ensureFile("./build" + file + ".js");
-    await Deno.writeFile("./build" + file + ".js", data);
+  const currentFile = await Deno.readTextFile(file)
+
+  file.endsWith('.svelte') ? await handleSvelte() : handleOther();
+  
+  async function handleSvelte() {
+    const { js, ast } = compile(currentFile, options);
+    const denoImports = denofy(js?.code ?? '', options?.sveltePath)
+    const data = encoder.encode(denoImports);
+
+    await ensureFile("./build" + file.replace(Deno.cwd(), '') + ".js");
+    await Deno.writeFile("./build" + file.replace(Deno.cwd(), '') + ".js", data);
+
+    const nestedImports = ast.instance?.content?.body?.filter((script: { type: string; source: { value: string; }; }) => script.type === "ImportDeclaration")
+    if(!nestedImports) return;
+    for(const nested of nestedImports){
+      compiler(join(Deno.cwd(), nested.source.value.replace('.', 'src/')))
+    }
   }
-  const html = encoder.encode(boilerplate.indexHtml);
-  const js = encoder.encode(boilerplate.indexJs);
-  Deno.writeFile("./build/index.html", html);
-  Deno.writeFile("./build/src/index.js", js);
-};
 
-/**
- * Gets all .svelte files in the cwd and compiles them.
- */
-export const easyCompile = async (): Promise<void> => {
-  // Update this to take an optional directory, so we can replace Deno.cwd
-  const projectDir = await getProjectDir(Deno.cwd());
-  const svelteFiles = getSvelteFiles(projectDir);
-  const weDidIt = await compileSvelteFiles(svelteFiles);
-  createBuildDir(weDidIt);
-};
-
-// export const testCompile = async (): Promise<void> => {
-//   // Update this to take an optional directory, so we can replace Deno.cwd
-//   const projectDir = await getProjectDir(Deno.cwd());
-//   const svelteFiles = getSvelteFiles(projectDir);
-//   const weDidIt = await compileSvelteFiles(svelteFiles);
-// }
-
-
-// testCompile();
+  async function handleOther(){
+    // We could denofy the other files here, in the off chance that they import svelte files the imports will need to be changed to .svelte.js.
+    // Not doing this for now, because I haven't found an example of this happening.
+    // Also might need to find imports here and include and call this function on them. Right now ../cli/commands/build.ts takes care of it in a way.
+    const data = encoder.encode(currentFile);
+    await ensureFile("./build" + file.replace(Deno.cwd(), ''));
+    await Deno.writeFile("./build" + file.replace(Deno.cwd(), ''), data);
+  }
+ 
+} 

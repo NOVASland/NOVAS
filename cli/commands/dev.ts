@@ -2,6 +2,10 @@ import flags from "./flags.ts";
 import devServer from "../dev/server.ts";
 
 // Function to run with dev command
+/**
+ * Function for when the dev command is called
+ * @param flag User flags. -h or --help.
+ */
 export const DevProject = (flag: string) => {
   if (flags['help'][flag]) {
     console.log(`you requested help (${flag}) with the dev command`);
