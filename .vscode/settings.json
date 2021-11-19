@@ -1,0 +1,17 @@
+{
+  "deno.enable": true,
+  "deno.lint": true,
+  "deno.unstable": true,
+  "[typescript]": {
+    "editor.defaultFormatter": "denoland.vscode-deno"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "denoland.vscode-deno"
+  },
+  "[svelte]": {
+    "editor.defaultFormatter": "denoland.vscode-deno"
+  },
+  "deno.suggest.imports.hosts": {
+    "https://deno.land": true
+  },
+} 
