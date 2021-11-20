@@ -1,4 +1,3 @@
-
 /**
  * The command to start the server.
  * @param args The command arguments.
