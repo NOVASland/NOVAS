@@ -1,59 +1,59 @@
-<h1 align="center">Svelte/Deno</h1> 
-<h3 align="center">A build tool that lets developers easily set up Svelte applications in a Deno runtime.</h3>
+<h1 align="center">NOVAS</h1> 
+<h3 align="center">A build tool that lets developers easily set up <a href='https://github.com/sveltejs/svelte'> Svelte </a> applications in a <a href='https://github.com/denoland/deno'> Deno </a> runtime.</h3>
 
-<hr/>
 
-<h3 align="left">Features</h3> 
-<hr/>
+## Features 
+
+
 <ul>
   <li>Compiler</li>
   <li>Bundler</li>
   <li>Live Reloading</li>
 </ul>
 
-<h3 align="left">Overview</h3> 
-<hr/>
-<p> After installing, run the following commands to get started. </p>
+## Overview
+- After installing, run the following commands to get started.
 
 ```
-SvelteDeno create my-app
+novas create my-app
 cd my-app
-SvelteDeno build
-SvelteDeno dev
+novas build
+novas dev
 ```
-<p> After running <code>Svelte/Deno dev</code>, open <a href=http://localhost:5000>http://localhost:5000</a> to see your app.</p>
-<p> Make changes to the .svelte files in the source folder for live reloading on the browser.</p>
+- After running <code>novas dev</code>, open <a href=http://localhost:5000>http://localhost:5000</a> to see your app.</p>
+- Make changes to the .svelte files in the source folder for live reloading on the browser.</p>
 
+## How to install NOVAS
 
-<div>
-  <h3 align="left">How to install Svelte/Deno</h3> 
-  <hr/>
-  <p> Install the latest version of <a href="https://deno.land/#installation"> Deno</a>.</p>
-  <p> Install SvelteDeno </p>
-
-  ```
-  deno install --allow-net --allow-read --allow-write --unstable -n SvelteDeno https://raw.githubusercontent.com/Group6OSP/SvelteDeno/master/cli/cli.ts
-  ```
-  
-</div>
-<h3 align="left">How to use Svelte/Deno</h3> 
-<hr/>
-<p> To create a project, type: </p>
+- Install the latest version of <a href="https://deno.land/#installation"> Deno</a>.
+- Install NOVAS 
 
 ```
-SvelteDeno create [project name]
-```
-<p> To compile, first change directories to the root of the project (<code>cd [project name]</code>) then type: </p>
-
-```
-SvelteDeno build
+deno install --allow-net --allow-read --allow-write --unstable -n novas https://raw.githubusercontent.com/Group6OSP/SvelteDeno/master/cli/cli.ts
 ```
 
-<p> To start developing, type: </p>
+
+## How to use NOVAS
+
+- To create a project, type: 
 
 ```
-SvelteDeno dev
+novas create [project name]
+```
+- To compile, first change directories to the root of the project (<code>cd [project name]</code>) then type:
+
+```
+novas build
 ```
 
-<h3 align="left">Meet the team</h3> 
-<hr>
+- To start developing, type: 
+
+```
+novas dev
+```
+
+## Meet the NOVAS team
+- Christie Herring
+- Garrett Hickman
+- Sylvia Liu
+- Tanner Peterson
