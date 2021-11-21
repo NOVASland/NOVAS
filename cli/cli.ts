@@ -1,8 +1,6 @@
 import { CreateProject } from "./commands/create.ts";
 import { DevProject } from "./commands/dev.ts";
 import { BuildProject } from "./commands/build.ts";
-// import { StartProject } from "./commands/start.ts";
-// import flags from "./commands/flags.ts";
 
 const command: { [key: string]: boolean } = { "create": true, "dev": true, "build": true, "start": true };
 const { args: Args } = Deno;
@@ -23,9 +21,6 @@ async function Main(appName: string, flag: string) {
         case "build":
           await BuildProject(appName);
           break;
-        // case "start":
-        //   await StartProject(appName);
-        //   break;
       }
     } 
     else if (cmd === "--version" || cmd === "-v") {
@@ -42,7 +37,7 @@ async function Main(appName: string, flag: string) {
     }
   }
 }
-// Boolean to let you know if the current module is the program entry point
+
 if (import.meta.main) {
   await Main(appName, flag);
 }

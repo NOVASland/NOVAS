@@ -1,30 +1,52 @@
- import flags from "./flags.ts";
-import { ensureFile } from "https://deno.land/std@0.113.0/fs/mod.ts"; // Requires --unstable flag
-import { easyCompile, getProjectDir } from "../../compiler/compiler.ts"
-
-// Function to copy over user files when given build command
-const buildUserFiles = async () => { 
-  const projectDir = await getProjectDir(Deno.cwd());
-  const userFiles = projectDir?.filter((file: string) => (!file.includes("/.") || !file.includes('.svelte')) && ((file.endsWith(".ts") || file.endsWith('.js'))) );
-  for (const filePath of userFiles) { 
-    const currentBuildPath = './build' + filePath.replace(`${Deno.cwd()}`, '');
-    
-    if (currentBuildPath === './build/src/index.js') continue;
-    
-    const fileContent = await Deno.readFile(filePath);
-    await ensureFile(currentBuildPath);
-    await Deno.writeFile(currentBuildPath, fileContent);
-  }
-}
+import flags from "./flags.ts";
+import { ensureFile } from "https://deno.land/std@0.113.0/fs/mod.ts";
+import { join } from "https://deno.land/std@0.113.0/path/mod.ts";
+import { compiler } from "../../compiler/compiler.ts";
+import boilerplate from "../../templates/build.ts";
 
 // Function to run when given build command
-export const BuildProject = async (flag: string) => {
+export const BuildProject = async (flag: string, cwd = Deno.cwd(), path = '/src/App.svelte') => { // C:\\Users\\Tanner\\Documents\\GitHub\\NOVAS2\\tests\\src\\App.svelte
+  const encoder = new TextEncoder();
+  const fullPath = join(cwd, path);
+  const memoized: {[key: string]: boolean} = {};
+
   if (flags['help'][flag]) {
     console.log(`To run build, type:` + ` %csvno build`, "color:#55dac8");
     return false;
   }
-  await buildUserFiles();
-  easyCompile();
+
+  await ensureFile('./build/index.js');
+  Deno.writeFile("./build/index.js", encoder.encode(boilerplate.indexJs));
+  
+  const buildImports = async (filePath: string) => {
+    filePath.endsWith('.svelte') ? await handleSvelte() : handleOther(); 
+
+    async function handleSvelte() {
+      const { js, ast } = await compiler(filePath); 
+      const data = encoder.encode(js);
+      
+      await ensureFile(join("./build", filePath.replace(cwd, '')) + ".js");
+      await Deno.writeFile(join("./build", filePath.replace(cwd, '')) + ".js", data);
+  
+      const nestedImports = ast.instance?.content?.body?.filter((script: { type: string; source: { value: string; }; }) => script.type === "ImportDeclaration")
+      if(!nestedImports) return;
+      for(const nested of nestedImports){
+        if (memoized[nested.source.value] === true) continue;
+        memoized[nested.source.value] = true;
+        buildImports(join(cwd, nested.source.value.replace('.', 'src/'))); 
+      }
+    }
+  
+    async function handleOther(){
+      const data = encoder.encode(filePath);
+      await ensureFile("./build" + filePath.replace(cwd, ''));
+      await Deno.writeFile("./build" + filePath.replace(cwd, ''), data);
+    }
+  }
+  
+  await buildImports(fullPath); 
+
   console.log("Your build was successful!");
   return true;
 }
+
