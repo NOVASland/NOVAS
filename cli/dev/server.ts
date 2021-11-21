@@ -1,13 +1,15 @@
-import { readableStreamFromReader } from "https://deno.land/std@0.113.0/streams/conversion.ts";
-import { compiler } from "../../compiler/compiler.ts";
+// import { readableStreamFromReader } from "https://deno.land/std@0.113.0/streams/conversion.ts";
+import { BuildProject } from "../commands/build.ts"; // C:\Users\Tanner\Documents\GitHub\NOVAS2\cli\commands\build.ts
+import { join } from "https://deno.land/std@0.113.0/path/mod.ts";
+import { Application, send, Router } from 'https://deno.land/x/oak@v9.0.1/mod.ts';
 
 export default async function devServer() {
 
-  const port = 3000;
-  const listener = Deno.listen({ port: port });
-  console.log(`Listening on port ${port}`);
+  // const port = 3000;
+  // const listener = Deno.listen({ port: port });
+  // console.log(`Listening on port ${port}`);
   const eventTypes: { [key: string]: boolean} = { remove: true, modify: true }; // Other option: create;
-  const fileTypes: { [key: string]: string } = { js: "javascript", ts: "typescript", html: "html", json: "json" }
+  // const fileTypes: { [key: string]: string } = { js: "javascript", ts: "typescript", html: "html", json: "json" }
 
   // Listens on port 80 for the websocket
   async function webSocketServer() {
@@ -50,8 +52,7 @@ export default async function devServer() {
         if (eventTypes[event.kind] && Date.now() - lastMessageSent > 1000) {
           watcher.close();
           console.log('Compiling...')
-          compiler(`${Deno.cwd()}/src/App.svelte`);
-          console.log("Your build was successful!");
+          await BuildProject('');
           socket.send("reload window");
           lastMessageSent = Date.now();
         }
@@ -64,37 +65,75 @@ export default async function devServer() {
   }
 
   webSocketServer();
+  
+  const port = 3000;
+  const app = new Application();
+  const router = new Router();
+  
+  app.use(async (ctx, next) => {
+    const { pathname } = ctx.request.url;
+    // console.log(pathname)
+    if (pathname === "/") {
+      await send(ctx, pathname, {
+        root: join(Deno.cwd(), "public"),
+        index: "index.html",
+      });
+    } else if (pathname === "/build/index.js") {
+      ctx.response.type = "application/javascript";
+      await send(ctx, pathname, {
+        root: Deno.cwd(),
+        index: "index.js",
+      });
+    } else {
+      // ctx.response.type = "application/javascript";
+      await send(ctx, pathname, {
+        root: Deno.cwd(),
+        index: "",
+      });
+    };
+  });
+
+
+  app.use(router.routes());
+  
+  app.addEventListener('listen', () => {
+    console.log(`🎉 Listening on port ${port}`);
+  });
+
+  await app.listen({ port });
 
   // Http server
-  for await (const conn of listener) {
-    const httpConn = Deno.serveHttp(conn);
-     for await (const { request: req, respondWith: res } of httpConn) {
-       const fileName = (new URL(req.url)).pathname;
-       if (fileName == "/") {
-         res(
-           new Response(
-             readableStreamFromReader(
-               await Deno.open(`${Deno.cwd()}/public/index.html`),
-             ),
-             {
-               headers: {
-                 "content-type": "text/html",
-                 "content-length":
-                   (await Deno.stat(`${Deno.cwd()}/public/index.html`)).size
-                     .toString(),
-               },
-             },
-           ),
-         );
-         continue;
-       }
-       res(
-         new Response(readableStreamFromReader(await Deno.open(`${Deno.cwd()}/${fileName}`)), {
-           headers: {
-             "content-type": `text/${fileTypes[fileName.replace(/(.*)\.([0-9a-z]+)$/gim, `$2`)]}`,
-           },
-         }),
-       );
-     }
-   }
+  // for await (const conn of listener) {
+  //   const httpConn = Deno.serveHttp(conn);
+
+  //    for await (const { request: req, respondWith: res } of httpConn) {
+  //      const fileName = (new URL(req.url)).pathname;
+  //      if (fileName == "/") {
+  //        res(
+  //          new Response(
+  //            readableStreamFromReader(
+  //              await Deno.open(`${Deno.cwd()}/public/index.html`),
+  //            ),
+  //            {
+  //              headers: {
+  //                "content-type": "text/html",
+  //                "content-length":
+  //                  (await Deno.stat(`${Deno.cwd()}/public/index.html`)).size
+  //                    .toString(),
+  //              },
+  //            },
+  //          ),
+  //        );
+  //        continue;
+  //      }
+  //      res(
+  //        new Response(readableStreamFromReader(await Deno.open(`${Deno.cwd()}/${fileName}`)), {
+  //          headers: {
+  //            "content-type": `text/${fileTypes[fileName.replace(/(.*)\.([0-9a-z]+)$/gim, `$2`)]}`, 
+  //          },
+  //        }),
+  //      );
+  //    }
+  //  }
+
 }
