@@ -1,8 +1,8 @@
 import flags from "./flags.ts";
 import { ensureFile } from "https://deno.land/std@0.113.0/fs/mod.ts";
 import { join } from "https://deno.land/std@0.113.0/path/mod.ts";
-import { compiler } from "../../compiler/compiler.ts";
-import boilerplate from "../../templates/build.ts";
+import { compiler } from "../compiler/compiler.ts";
+import boilerplate from "../templates/build.ts";
 
 // Function to run when given build command
 export const BuildProject = async (flag: string, cwd = Deno.cwd(), path = '/src/App.svelte') => { // C:\\Users\\Tanner\\Documents\\GitHub\\NOVAS2\\tests\\src\\App.svelte
@@ -11,7 +11,7 @@ export const BuildProject = async (flag: string, cwd = Deno.cwd(), path = '/src/
   const memoized: {[key: string]: boolean} = {};
 
   if (flags['help'][flag]) {
-    console.log(`To run build, type:` + ` %csvno build`, "color:#55dac8");
+    console.log(`To run build, type:` + ` %NOVAS build`, "color:#55dac8");
     return false;
   }
 

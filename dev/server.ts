@@ -70,7 +70,7 @@ export default async function devServer() {
   const app = new Application();
   const router = new Router();
   
-  app.use(async (ctx, next) => {
+  app.use(async (ctx) => {
     const { pathname } = ctx.request.url;
     // console.log(pathname)
     if (pathname === "/") {
@@ -90,7 +90,7 @@ export default async function devServer() {
         root: Deno.cwd(),
         index: "",
       });
-    };
+    }
   });
 
 

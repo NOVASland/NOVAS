@@ -24,12 +24,12 @@ async function Main(appName: string, flag: string) {
       }
     } 
     else if (cmd === "--version" || cmd === "-v") {
-      console.log(`Svno 1.0`);
+      console.log(`NOVAS 1.0`);
     }
     else {
-      console.log(`To create a project, type:` + ` %csvno create ` + `%c[project name]`, "color:#55dac8;", "color:red;");
-      console.log(`To compile a project, type:` + ` %csvno build`, "color:#55dac8;");
-      console.log(`To start your developing, type:` + ` %csvno start`, "color:#55dac8;");
+      console.log(`To create a project, type:` + ` %cNOVAS create ` + `%c[project name]`, "color:#55dac8;", "color:red;");
+      console.log(`To compile a project, type:` + ` %cNOVAS build`, "color:#55dac8;");
+      console.log(`To start your developing, type:` + ` %cNOVAS start`, "color:#55dac8;");
     }
   } catch (error) {
     if (!(error instanceof Deno.errors.NotFound)) {
