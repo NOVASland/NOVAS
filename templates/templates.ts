@@ -5,11 +5,11 @@ export const indexHTML = `<!DOCTYPE html>
     <link rel="icon" href="data:;base64,=">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Starter Svelte/Deno" />
-    <title>Starter Svelte/Deno</title>
+    <meta name="description" content="Starter NOVAS app" />
+    <title>Starter NOVAS app</title>
   </head>
   <body>
-    <!-- Keep this script. It's how Compiled svelte apps are rendered -->
+    <!-- Keep this script. It's how compiled svelte apps are rendered -->
     <script type="module" src="../build/index.js"></script>
   </body>
 </html>`;
@@ -54,7 +54,7 @@ img {
 
 <div class="counter">
 <p class="app-name">
-  Svelte/Deno.
+  NOVAS
 </p>
 <p>
   You clicked {count} {count === 1 ? 'time' : 'times'}
@@ -67,7 +67,7 @@ img {
 </button>
 <div class='github-container'>
   <img {src} alt='github logo'>
-  <a class='Github' href='https://github.com/Group6OSP/SvelteDeno'>
+  <a class='Github' href='https://github.com/NOVASland/NOVAS'>
     Github
   </a>
 </div>
