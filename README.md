@@ -29,7 +29,7 @@ novas dev
 - Install NOVAS 
 
 ```
-deno install --allow-net --allow-read --allow-write --unstable https://raw.githubusercontent.com/NOVASland/NOVAS/main/cli.ts
+deno install --allow-net --allow-read --allow-write --unstable https://deno.land/x/novas/cli.ts
 ```
 <details><summary>About Permissions</summary>
 <ul>
@@ -63,7 +63,7 @@ novas dev
 - This will start up the development server and will open a websocket listening for any changes to the <code>./src</code> folder. Upon saving changes, your svelte code will be compiled again and the browser will reload to reflect the changes.
 
 ## Meet the NOVAS team
-- Christie Herring
-- Garrett Hickman
-- Sylvia Liu
-- Tanner Peterson
+- <a href='https://github.com/clherring'>Christie Herring</a>
+- <a href='https://github.com/grhhhh'>Garrett Hickman</a>
+- <a href='https://github.com/liusylvia'>Sylvia Liu</a>
+- <a href='https://github.com/tanpeterson'>Tanner Peterson</a>
