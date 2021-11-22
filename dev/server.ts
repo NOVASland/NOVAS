@@ -1,5 +1,5 @@
 // import { readableStreamFromReader } from "https://deno.land/std@0.113.0/streams/conversion.ts";
-import { BuildProject } from "../commands/build.ts"; // C:\Users\Tanner\Documents\GitHub\NOVAS2\cli\commands\build.ts
+import { BuildProject } from "../commands/build.ts";
 import { join } from "https://deno.land/std@0.113.0/path/mod.ts";
 import { Application, send, Router } from 'https://deno.land/x/oak@v9.0.1/mod.ts';
 
@@ -11,7 +11,6 @@ export default async function devServer() {
   const eventTypes: { [key: string]: boolean} = { remove: true, modify: true }; // Other option: create;
   // const fileTypes: { [key: string]: string } = { js: "javascript", ts: "typescript", html: "html", json: "json" }
 
-  // Listens on port 80 for the websocket
   async function webSocketServer() {
     const listener1 = Deno.listen({ port: 80 });
     for await (const conn of listener1) {
@@ -72,7 +71,6 @@ export default async function devServer() {
   
   app.use(async (ctx) => {
     const { pathname } = ctx.request.url;
-    // console.log(pathname)
     if (pathname === "/") {
       await send(ctx, pathname, {
         root: join(Deno.cwd(), "public"),
@@ -85,7 +83,6 @@ export default async function devServer() {
         index: "index.js",
       });
     } else {
-      // ctx.response.type = "application/javascript";
       await send(ctx, pathname, {
         root: Deno.cwd(),
         index: "",
