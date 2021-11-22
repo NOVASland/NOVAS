@@ -2,7 +2,6 @@ const boilerplate = {
   indexJs: `import App from './src/App.svelte.js';
 
 const socket = new WebSocket("ws://localhost:80");
-console.log("index.js Listening ws:80", socket)
 
 const reloadWindow = () => {
   window.location.reload();

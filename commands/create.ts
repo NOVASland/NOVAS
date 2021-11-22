@@ -6,12 +6,12 @@ import {
   svelteAppComponent,
   vscodeDenoSettings,
   defaultConfigFile,
-} from "../../templates/templates.ts";
+} from "../templates/templates.ts";
 
 export async function CreateProject(name: string, path: string, flag: string): Promise<boolean> {
   // TODO: Fix flags to be useful
   if (flags['help'][flag] || flags['help'][name]) {
-    console.log(`To create a project, type:` + ` %csvno create ` + `%c[project name]`, "color:#55dac8;", "color:red;")
+    console.log(`To create a project, type:` + ` %cNOVAS create ` + `%c[project name]`, "color:#55dac8;", "color:red;")
     return false;
   }
   const appDir = `${path}/${name}`;
