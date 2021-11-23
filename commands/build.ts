@@ -22,7 +22,6 @@ export const BuildProject = async (flag: string, cwd = Deno.cwd(), path = '/src/
     filePath.endsWith('.svelte') ? await handleSvelte() : handleOther(); 
 
     async function handleSvelte() {
-      console.log('handlesvelte is being used on: ', filePath);
       const { js, ast } = await compiler(filePath); 
       const data = encoder.encode(js);
       
@@ -40,7 +39,8 @@ export const BuildProject = async (flag: string, cwd = Deno.cwd(), path = '/src/
   
     async function handleOther(){
       try {
-      const data = encoder.encode(filePath);
+      const currentFile = await Deno.readTextFile(filePath);
+      const data = encoder.encode(currentFile);
       await ensureFile("./build" + filePath.replace(cwd, ''));
       await Deno.writeFile("./build" + filePath.replace(cwd, ''), data);
     }
