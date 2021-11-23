@@ -40,7 +40,7 @@ export async function CreateProject(name: string, path: string, flag: string): P
 
     
     const endTime = Date.now();
-    console.log(`Project created successfully in ${(endTime - startTime) / 1000}s.! 🦕`);
+    console.log(`Project created successfully in ${(endTime - startTime) / 1000}s.! ✨`);
 
     return true;
   } catch (error: unknown) {
