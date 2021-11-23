@@ -5,11 +5,8 @@ import { Application, send, Router } from 'https://deno.land/x/oak@v9.0.1/mod.ts
 
 export default async function devServer() {
 
-  // const port = 3000;
-  // const listener = Deno.listen({ port: port });
-  // console.log(`Listening on port ${port}`);
   const eventTypes: { [key: string]: boolean} = { remove: true, modify: true }; // Other option: create;
-  // const fileTypes: { [key: string]: string } = { js: "javascript", ts: "typescript", html: "html", json: "json" }
+  
 
   async function webSocketServer() {
     const listener1 = Deno.listen({ port: 80 });
@@ -98,39 +95,5 @@ export default async function devServer() {
   });
 
   await app.listen({ port });
-
-  // Http server
-  // for await (const conn of listener) {
-  //   const httpConn = Deno.serveHttp(conn);
-
-  //    for await (const { request: req, respondWith: res } of httpConn) {
-  //      const fileName = (new URL(req.url)).pathname;
-  //      if (fileName == "/") {
-  //        res(
-  //          new Response(
-  //            readableStreamFromReader(
-  //              await Deno.open(`${Deno.cwd()}/public/index.html`),
-  //            ),
-  //            {
-  //              headers: {
-  //                "content-type": "text/html",
-  //                "content-length":
-  //                  (await Deno.stat(`${Deno.cwd()}/public/index.html`)).size
-  //                    .toString(),
-  //              },
-  //            },
-  //          ),
-  //        );
-  //        continue;
-  //      }
-  //      res(
-  //        new Response(readableStreamFromReader(await Deno.open(`${Deno.cwd()}/${fileName}`)), {
-  //          headers: {
-  //            "content-type": `text/${fileTypes[fileName.replace(/(.*)\.([0-9a-z]+)$/gim, `$2`)]}`, 
-  //          },
-  //        }),
-  //      );
-  //    }
-  //  }
 
 }

@@ -29,7 +29,7 @@ async function Main(appName: string, flag: string) {
     else {
       console.log(`To create a project, type:` + ` %cNOVAS create ` + `%c[project name]`, "color:#55dac8;", "color:red;");
       console.log(`To compile a project, type:` + ` %cNOVAS build`, "color:#55dac8;");
-      console.log(`To start your developing, type:` + ` %cNOVAS start`, "color:#55dac8;");
+      console.log(`To start a dev server, type:` + ` %cNOVAS dev`, "color:#55dac8;");
     }
   } catch (error) {
     if (!(error instanceof Deno.errors.NotFound)) {

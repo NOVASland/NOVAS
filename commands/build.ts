@@ -38,10 +38,15 @@ export const BuildProject = async (flag: string, cwd = Deno.cwd(), path = '/src/
     }
   
     async function handleOther(){
+      try {
       const data = encoder.encode(filePath);
       await ensureFile("./build" + filePath.replace(cwd, ''));
       await Deno.writeFile("./build" + filePath.replace(cwd, ''), data);
     }
+    catch {
+      return;
+    }
+  }
   }
   
   await buildImports(fullPath); 
