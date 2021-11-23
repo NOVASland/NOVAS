@@ -22,7 +22,6 @@ export const BuildProject = async (flag: string, cwd = Deno.cwd(), path = '/src/
     filePath.endsWith('.svelte') ? await handleSvelte() : handleOther(); 
 
     async function handleSvelte() {
-      console.log('handlesvelte is being used on: ', filePath);
       const { js, ast } = await compiler(filePath); 
       const data = encoder.encode(js);
       
