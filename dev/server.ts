@@ -6,7 +6,7 @@ import { Application, send, Router } from 'https://deno.land/x/oak@v9.0.1/mod.ts
 export default async function devServer() {
 
   const eventTypes: { [key: string]: boolean} = { remove: true, modify: true }; // Other option: create;
-  
+
 
   async function webSocketServer() {
     const listener1 = Deno.listen({ port: 80 });

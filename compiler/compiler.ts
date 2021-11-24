@@ -1,14 +1,13 @@
 import { compile } from "https://cdn.jsdelivr.net/npm/svelte@3.42.3/compiler.mjs";
 import { join } from "https://deno.land/std@0.113.0/path/mod.ts";
 
-const getOptions = async() => {
-  let options: { [key: string]: string|boolean};
-  try{
-    const decoderlol = new TextDecoder('utf-8');
+const getOptions = async () => {
+  let options: { [key: string]: string | boolean };
+  try {
+    const decoderlol = new TextDecoder("utf-8");
     const data = await Deno.readFile(join(Deno.cwd(), "compileOptions.json"));
-    options = JSON.parse(decoderlol.decode(data))
-  }
-  catch{
+    options = JSON.parse(decoderlol.decode(data));
+  } catch {
     // console.log("No compileOptions.json file found, using default compile options.");
     // All options: https://svelte.dev/docs#svelte_compile
     options = {
@@ -18,13 +17,13 @@ const getOptions = async() => {
     };
   }
   return options;
-}
+};
 
-const denofy = (file:string, sveltePath: string | boolean) => {
+const denofy = (file: string, sveltePath: string | boolean) => {
   return file.replace(
     /import\s(.+?)\sfrom\s*['"](.+?)(.svelte)['"]/igm,
     `import $1 from '$2$3.js'`,
-    )
+  )
     .replace(
       /import\s(.+?)\sfrom\s*['"](svelte\/(.+?))['"]/igm,
       `import $1 from '${sveltePath}` + `/$3'`,
@@ -32,16 +31,18 @@ const denofy = (file:string, sveltePath: string | boolean) => {
     .replace(
       /import\s(.+?)\sfrom\s*['"](svelte)['"]/igm,
       `import $1 from '${sveltePath}/internal'`,
-    ) 
-}
+    );
+};
 
 export const compiler = async (file: string) => {
   const options = await getOptions();
-  const currentFile = await Deno.readTextFile(file); 
+  const currentFile = await Deno.readTextFile(file);
 
   const { js, ast } = compile(currentFile, options);
-  const denoImports = denofy(js?.code ?? '', options?.sveltePath);
+  const denoImports = denofy(js?.code ?? "", options?.sveltePath);
   const denoCompiled = { js: denoImports, ast };
 
   return denoCompiled;
 }
+
+export default denofy;
