@@ -45,3 +45,5 @@ export const compiler = async (file: string) => {
 
   return denoCompiled;
 }
+
+export default denofy;
