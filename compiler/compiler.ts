@@ -8,7 +8,6 @@ const getOptions = async () => {
     const data = await Deno.readFile(join(Deno.cwd(), "compileOptions.json"));
     options = JSON.parse(decoderlol.decode(data));
   } catch {
-    // console.log("No compileOptions.json file found, using default compile options.");
     // All options: https://svelte.dev/docs#svelte_compile
     options = {
       generate: "dom",

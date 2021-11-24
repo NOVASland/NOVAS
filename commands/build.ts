@@ -51,9 +51,10 @@ export const BuildProject = async (flag: string, cwd = Deno.cwd(), path = '/src/
       const data = encoder.encode(denofiedFile);
       await ensureFile("./build" + filePath.replace(cwd, ''));
       await Deno.writeFile("./build" + filePath.replace(cwd, ''), data);
-    }
-    catch {
-      return;
+     }
+      catch {
+        return;
+      }
     }
   };
 
