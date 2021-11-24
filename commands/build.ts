@@ -10,36 +10,41 @@ export const BuildProject = async (flag: string, cwd = Deno.cwd(), path = '/src/
   const sveltePath = "https://cdn.skypack.dev/svelte@3.44.1";
   const encoder = new TextEncoder();
   const fullPath = join(cwd, path);
-  const memoized: {[key: string]: boolean} = {};
+  const memoized: { [key: string]: boolean } = {};
 
-  if (flags['help'][flag]) {
+  if (flags["help"][flag]) {
     console.log(`To run build, type:` + ` %NOVAS build`, "color:#55dac8");
     return false;
   }
 
-  await ensureFile('./build/index.js');
+  await ensureFile("./build/index.js");
   Deno.writeFile("./build/index.js", encoder.encode(boilerplate.indexJs));
-  
+
   const buildImports = async (filePath: string) => {
-    filePath.endsWith('.svelte') ? await handleSvelte() : handleOther(); 
+    filePath.endsWith(".svelte") ? await handleSvelte() : handleOther();
 
     async function handleSvelte() {
       const { js, ast } = await compiler(filePath); 
       const data = encoder.encode(js);
-      
-      await ensureFile(join("./build", filePath.replace(cwd, '')) + ".js");
-      await Deno.writeFile(join("./build", filePath.replace(cwd, '')) + ".js", data);
-  
-      const nestedImports = ast.instance?.content?.body?.filter((script: { type: string; source: { value: string; }; }) => script.type === "ImportDeclaration")
-      if(!nestedImports) return;
-      for(const nested of nestedImports){
+
+      await ensureFile(join("./build", filePath.replace(cwd, "")) + ".js");
+      await Deno.writeFile(
+        join("./build", filePath.replace(cwd, "")) + ".js",
+        data,
+      );
+
+      const nestedImports = ast.instance?.content?.body?.filter((
+        script: { type: string; source: { value: string } },
+      ) => script.type === "ImportDeclaration");
+      if (!nestedImports) return;
+      for (const nested of nestedImports) {
         if (memoized[nested.source.value] === true) continue;
         memoized[nested.source.value] = true;
-        buildImports(join(cwd, nested.source.value.replace('.', 'src/'))); 
+        buildImports(join(cwd, nested.source.value.replace(".", "src/")));
       }
     }
-  
-    async function handleOther(){
+
+    async function handleOther() {
       try {
       const currentFile = await Deno.readTextFile(filePath);
       const denofiedFile = await denofy(currentFile, sveltePath);
@@ -50,12 +55,10 @@ export const BuildProject = async (flag: string, cwd = Deno.cwd(), path = '/src/
     catch {
       return;
     }
-  }
-  }
-  
-  await buildImports(fullPath); 
+  };
+
+  await buildImports(fullPath);
 
   console.log("Your build was successful!");
   return true;
-}
-
+};
