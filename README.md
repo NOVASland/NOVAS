@@ -62,9 +62,17 @@ novas dev
 
 - This will start up the development server and will open a websocket listening for any changes to the <code>./src</code> folder. Upon saving changes, your svelte code will be compiled again and the browser will reload to reflect the changes.
 
+## Read More
+- <a href='https://medium.com/codex/novas-accelerating-svelte-and-deno-application-generation-3371c395461a'>NOVAS: Accelerating Svelte and Deno Application Creation </a>
+
+## ➕ Contributing
+As an open-source product, we value your help! 
+- To contribute, please submit a PR with a descriptive title or create an issue to discuss with other contributors before proceeding. 
+
 ## 👋 Meet the NOVAS team
 - <a href='https://github.com/clherring'>Christie Herring</a>
 - <a href='https://github.com/grhhhh'>Garrett Hickman</a>
 - <a href='https://github.com/liusylvia'>Sylvia Liu</a>
 - <a href='https://github.com/tanpeterson'>Tanner Peterson</a>
 
+<h3 align='center'>Developed Under OS Labs</h3>
