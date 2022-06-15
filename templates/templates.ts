@@ -13,8 +13,27 @@ export const indexHTML = `<!DOCTYPE html>
     <script type="module" src="../build/index.js"></script>
   </body>
 </html>`;
-
+export const svelteComponent=`<script>
+const src = 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png'
+</script>
+<div class='github-container'>
+  <img {src} alt='github logo'>
+  <a class='Github' href='https://github.com/NOVASland/NOVAS'>
+    Github
+  </a>
+</div>
+<style>
+img {
+  max-height: 25px;
+}
+.github-container {
+  display: flex;
+  align-items: center;
+}
+</style>
+`
 export const svelteAppComponent = `<script>
+import Component from './component.svelte';
 let count = 0;
 
 function handleClick() {
@@ -24,7 +43,6 @@ function handleClick() {
 const resetCount = () => {
   count -= 1;
 }
-const src = 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png'
 </script>
 
 <style>
@@ -43,13 +61,6 @@ const src = 'https://github.githubassets.com/images/modules/logos_page/GitHub-Ma
   font-size: 40px;
   font-weight: bold;
 }
-img {
-  max-height: 25px;
-}
-.github-container {
-  display: flex;
-  align-items: center;
-}
 </style>
 
 <div class="counter">
@@ -65,12 +76,7 @@ img {
 <button on:click={resetCount}>
   Decrement count
 </button>
-<div class='github-container'>
-  <img {src} alt='github logo'>
-  <a class='Github' href='https://github.com/NOVASland/NOVAS'>
-    Github
-  </a>
-</div>
+<Component/>
 
 </div>
 `;
@@ -97,6 +103,6 @@ export const vscodeDenoSettings = `{
 
 export const defaultConfigFile =`{
     "generate": "dom",
-    "sveltePath": "https://cdn.skypack.dev/svelte@3.44.1",
+    "sveltePath": "https://cdn.skypack.dev/svelte@3.42.3",
     "hydratable": true,
   }` 

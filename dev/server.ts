@@ -47,9 +47,8 @@ export default async function devServer() {
       for await (const event of watcher) {
         if (eventTypes[event.kind] && Date.now() - lastMessageSent > 1000) {
           watcher.close();
-          console.log('Compiling...')
           await BuildProject('');
-          socket.send("reload window");
+          if (1===socket.readyState) socket.send("reload window");
           lastMessageSent = Date.now();
         }
       }

@@ -4,6 +4,7 @@ import {
   indexHTML,
   mainJs,
   svelteAppComponent,
+  svelteComponent,
   vscodeDenoSettings,
   defaultConfigFile,
 } from "../templates/templates.ts";
@@ -26,15 +27,21 @@ export async function CreateProject(name: string, path: string, flag: string): P
     await Deno.mkdir(join(appDir, ".vscode"));
     
     const indexHtmlFile = await Deno.create(join(`${path}/${name}/public`, "index.html"));
+    const indexBundleHtmlFile = await Deno.create(join(`${path}/${name}/public`, "index.bundle.html"));
     const settings = await Deno.create(join(`${path}/${name}/.vscode`, "settings.json"));
     const defaultConfig = await Deno.create(join(appDir, "compileOptions.json"));
     const srcFile = await Deno.create(join(`${appDir}/src`, "App.svelte"));
+    const componentFile = await Deno.create(join(`${appDir}/src`, "component.svelte"));
     const mainJsFile = await Deno.create(join(`${appDir}/src`, "index.js"));
     
     indexHtmlFile.write(encoder.encode(indexHTML));
+    indexBundleHtmlFile.write(encoder.encode(
+        indexHTML.replace('<script type="module" src="../build/index.js">'
+                          ,'<script src="bundle.js">')));
     settings.write(encoder.encode(vscodeDenoSettings));
     defaultConfig.write(encoder.encode(defaultConfigFile));
     srcFile.write(encoder.encode(svelteAppComponent));
+    componentFile.write(encoder.encode(svelteComponent));
     mainJsFile.write(encoder.encode(mainJs));
 
     

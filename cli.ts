@@ -16,10 +16,17 @@ async function Main(appName: string, flag: string) {
             Main(`${prompt('Please enter App name: ', 'myApp')}`, flag);
           break;
         case "dev":
+          await BuildProject(appName);
           DevProject(appName);
           break;
         case "build":
           await BuildProject(appName);
+          //convert es6 module for js to consumed locally 
+          const p=Deno.run({cmd:["deno","bundle","build/index.js","public/bundle.js"]});
+          const {success} = await p.status();
+          if (success) {
+            console.log('./public/index.bundle.html is now deployable without build/*.js ')
+          }
           break;
       }
     } 
