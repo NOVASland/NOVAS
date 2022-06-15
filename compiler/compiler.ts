@@ -1,4 +1,4 @@
-import { compile } from "https://cdn.skypack.dev/svelte@3.48.0/compiler.mjs";
+import { compile } from "https://cdn.skypack.dev/svelte@3.42.3/compiler.mjs";
 import { join } from "https://deno.land/std@0.113.0/path/mod.ts";
 
 const getOptions = async () => {
@@ -11,7 +11,7 @@ const getOptions = async () => {
     // All options: https://svelte.dev/docs#svelte_compile
     options = {
       generate: "dom",
-      sveltePath: "https://cdn.skypack.dev/svelte@3.48.0",
+      sveltePath: "https://cdn.skypack.dev/svelte@3.42.3",
       hydratable: true,
     };
   }
