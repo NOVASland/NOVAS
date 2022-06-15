@@ -17,7 +17,6 @@
 ```
 novas create my-app
 cd my-app
-novas build
 novas dev
 ```
 - After running <code>novas dev</code>, open <a href=http://localhost:3000>http://localhost:3000</a> to see your app.</p>
@@ -29,17 +28,25 @@ novas dev
 - Install NOVAS 
 
 ```
-deno install --allow-net --allow-read --allow-write --unstable https://deno.land/x/novas/cli.ts
+deno install --allow-net --allow-read --allow-write --allow-run --unstable https://deno.land/x/novas/cli.ts
 ```
 <details><summary>About Permissions</summary>
 <ul>
   <li>--allow-net: Required for the dev server. </li>
   <li> --allow-read: Allows NOVAS to compile svelte files.</li>
   <li> --allow-write: Allows NOVAS to write to files it creates during the <code>novas build</code> process</li>
+  <li> --allow-run: Allows NOVAS to run shell command.</li>
   <li> --unstable: Allows the use of Deno's standard modules which might not be stable yet.</li>
 </ul>
 Read more about <a href="https://deno.land/manual@v1.16.2/getting_started/permissions">permissions</a> or <a href="https://deno.land/manual/runtime/stability">stability</a> here
 </details>
+or simply,
+
+```
+deno install -A https://deno.land/x/novas/cli.ts
+```
+
+
 
 ## ⭐ How to use NOVAS
 
@@ -48,11 +55,6 @@ Read more about <a href="https://deno.land/manual@v1.16.2/getting_started/permis
 ```
 novas create [project name]
 ```
-- To compile, first change directories to the root of the project (<code>cd [project name]</code>) then type:
-
-```
-novas build
-```
 
 - To start developing, type: 
 
@@ -60,7 +62,16 @@ novas build
 novas dev
 ```
 
-- This will start up the development server and will open a websocket listening for any changes to the <code>./src</code> folder. Upon saving changes, your svelte code will be compiled again and the browser will reload to reflect the changes.
+- This will rebuild the source, start up the development server and will open a websocket listening for any changes to the <code>./src</code> folder. Upon saving changes, your svelte code will be compiled again and transpiled code are saved in<code>./build</code> and the browser will reload to reflect the changes.
+
+- To compile, first change directories to the root of the project (<code>cd [project name]</code>) then type:
+
+```
+novas build
+```
+- At at end <code>novas build</code> will invoke <code>deno bundle</code> to pack all files in <code>./build</code> and create a stand alone <code>./public/bundle.js</code>.
+- deploy <code>index.bundle.html</code> + <code>bundle.js</code> if ES6 module loading is not available, e.g, serving via file:// protocol .
+
 
 ## Read More
 - <a href='https://medium.com/codex/novas-accelerating-svelte-and-deno-application-generation-3371c395461a'>NOVAS: Accelerating Svelte and Deno Application Creation </a>
