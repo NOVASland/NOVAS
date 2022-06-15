@@ -18,7 +18,7 @@ const updateNeeded=async (srcfn: string, buildfn: string)=>{
 }
 // Function to run when given build command
 export const BuildProject = async (flag: string, cwd = Deno.cwd(), path = '/src/App.svelte') => { // C:\\Users\\Tanner\\Documents\\GitHub\\NOVAS2\\tests\\src\\App.svelte
-  const sveltePath = "https://cdn.skypack.dev/svelte@3.44.1";
+  const sveltePath = "https://cdn.skypack.dev/svelte@3.48.0";
   const encoder = new TextEncoder();
   const fullPath = join(cwd, path);
   const memoized: { [key: string]: boolean } = {};

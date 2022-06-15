@@ -103,6 +103,6 @@ export const vscodeDenoSettings = `{
 
 export const defaultConfigFile =`{
     "generate": "dom",
-    "sveltePath": "https://cdn.skypack.dev/svelte@3.44.1",
+    "sveltePath": "https://cdn.skypack.dev/svelte@3.48.0",
     "hydratable": true,
   }` 
