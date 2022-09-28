@@ -27,9 +27,9 @@ async function Main(appName: string, flag: string) {
       console.log(`NOVAS 1.0`);
     }
     else {
-      console.log(`To create a project, type:` + ` %cNOVAS create ` + `%c[project name]`, "color:#55dac8;", "color:red;");
-      console.log(`To compile a project, type:` + ` %cNOVAS build`, "color:#55dac8;");
-      console.log(`To start a dev server, type:` + ` %cNOVAS dev`, "color:#55dac8;");
+      console.log(`To create a project, type:` + ` %cnovas create ` + `%c[project name]`, "color:#55dac8;", "color:red;");
+      console.log(`To compile a project, type:` + ` %cnovas build`, "color:#55dac8;");
+      console.log(`To start a dev server, type:` + ` %cnovas dev`, "color:#55dac8;");
     }
   } catch (error) {
     if (!(error instanceof Deno.errors.NotFound)) {
