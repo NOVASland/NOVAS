@@ -13,7 +13,7 @@ export const BuildProject = async (flag: string, cwd = Deno.cwd(), path = '/src/
   const memoized: { [key: string]: boolean } = {};
 
   if (flags["help"][flag]) {
-    console.log(`To run build, type:` + ` %NOVAS build`, "color:#55dac8");
+    console.log(`To run build, type:` + ` %cnovas build`, "color:#55dac8");
     return false;
   }
 
